@@ -5,6 +5,11 @@ class osiris::proxy (
   $enable_ssl             = false,
   $enable_sso             = false,
   $enable_letsencrypt     = false,
+  $enable_basic_auth      = false,
+
+  $basic_auth_user        = undef,
+  $basic_auth_pwd         = undef,
+  $user_file_path          = '/etc/httpd/passwords',
 
   $context_path_geoserver = undef,
   $context_path_resto     = undef,
@@ -239,6 +244,32 @@ class osiris::proxy (
     $proxy_pass_match = $default_proxy_pass_match
   }
 
+  if $enable_basic_auth {
+    unless ($basic_auth_user and $basic_auth_pwd) {
+      fail("osiris::proxy requires \$basic_auth_user and \$basic_auth_pwd to be set when \$enable_basic_auth is true")
+    }
+
+    $basic_auth_hashed_pwd = apache::apache_pw_hash($basic_auth_pwd)
+    file { $user_file_path:
+      ensure  => present,
+      mode    => '0600',
+      owner   => 'root',
+      group   => 'root',
+      content => "$basic_auth_user:$basic_auth_hashed_pwd"
+    }
+
+    $auth_config = {
+      auth_type       => 'Basic',
+      auth_name       => 'Basic Auth',
+      auth_user_file  => $user_file_path,
+      auth_require    => 'valid-user',
+    }
+  } else {
+    $auth_config = {}
+  }
+
+  $default_vhost_params = merge($default_proxy_config, $auth_config)
+
   if $enable_ssl {
     unless ($enable_letsencrypt or ($tls_cert and $tls_key)) {
       fail("osiris::proxy requres \$tls_cert and \$tls_key to be set if \$enable_ssl is true and \$enable_letsencrypt is false")
@@ -313,7 +344,7 @@ class osiris::proxy (
       directories            => $directories,
       proxy_pass             => $proxy_pass,
       proxy_pass_match       => $proxy_pass_match,
-      *                      => $default_proxy_config,
+      *                      => $default_vhost_params,
     }
   } else {
     apache::vhost { $vhost_name:
@@ -322,7 +353,7 @@ class osiris::proxy (
       directories      => $directories,
       proxy_pass       => $proxy_pass,
       proxy_pass_match => $proxy_pass_match,
-      *                => $default_proxy_config
+      *                => $default_vhost_params
     }
   }
 
