@@ -1,4 +1,5 @@
 class osiris::proxy::letsencrypt {
+  require ::osiris::common::apache
   require ::epel
 
   class { ::letsencrypt:
@@ -8,7 +9,8 @@ class osiris::proxy::letsencrypt {
 
   ::letsencrypt::certonly { $osiris::proxy::vhost_name:
     domains              => [$osiris::proxy::vhost_name],
-    plugin               => 'apache',
+    plugin               => 'standalone',
+    additional_args      => ["--preferred-challenges http-01", "--expand", "--quiet"],
     manage_cron          => true,
     cron_success_command => '/bin/systemctl reload httpd.service',
     suppress_cron_output => true,

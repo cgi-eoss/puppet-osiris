@@ -289,12 +289,14 @@ class osiris::proxy (
       $real_tls_key_path = "/etc/letsencrypt/live/$vhost_name/privkey.pem"
     }
 
-    apache::vhost { "redirect ${vhost_name} non-ssl":
-      servername      => $vhost_name,
-      port            => '80',
-      docroot         => '/var/www/redirect',
-      redirect_status => 'permanent',
-      redirect_dest   => "https://${vhost_name}/"
+    unless $enable_letsencrypt {
+      apache::vhost { "redirect ${vhost_name} non-ssl":
+        servername      => $vhost_name,
+        port            => '80',
+        docroot         => '/var/www/redirect',
+        redirect_status => 'permanent',
+        redirect_dest   => "https://${vhost_name}/"
+      }
     }
     apache::vhost { $vhost_name:
       servername             => $vhost_name,
@@ -324,11 +326,13 @@ class osiris::proxy (
     }
   }
 
-
-  class { 'apache::mod::authn_dbd':
-    authn_dbd_params   => "host=${osiris::globals::proxy_dbd_db} port=${osiris::globals::proxy_dbd_port} user=${osiris::globals::osiris_db_v2_api_keys_reader_username} password=${osiris::globals::osiris_db_v2_api_keys_reader_password} dbname=${osiris::globals::osiris_db_v2_name}",
-    authn_dbd_dbdriver => "${osiris::globals::proxy_dbd_dbdriver}"
-  }
+  # authn_dbd does not install properly, used for Puppetised API key access
+  # TODO: Remove functionality or solve install problem
+  #
+  # class { 'apache::mod::authn_dbd':
+  #   authn_dbd_params   => "host=${osiris::globals::proxy_dbd_db} port=${osiris::globals::proxy_dbd_port} user=${osiris::globals::osiris_db_v2_api_keys_reader_username} password=${osiris::globals::osiris_db_v2_api_keys_reader_password} dbname=${osiris::globals::osiris_db_v2_name}",
+  #   authn_dbd_dbdriver => "${osiris::globals::proxy_dbd_dbdriver}"
+  # }
 
 
 }
