@@ -23,8 +23,8 @@ class osiris::geoserver (
   $wcs_eo_plugin          = 'geoserver-2.12.1-wcs2_0-eo-plugin',
   $wps_plugin             = 'geoserver-2.12.1-wps-plugin',
 
-  $ncwms_download_url     = 'http://ares.boundlessgeo.com/geoserver/2.12.x/community-latest/geoserver-2.12-SNAPSHOT-ncwms-plugin.zip',
-  $wmts_download_url      = 'http://ares.boundlessgeo.com/geoserver/2.12.x/community-latest/geoserver-2.12-SNAPSHOT-wmts-multi-dimensional-plugin.zip',
+  $ncwms_download_url     = 'https://build.geoserver.org/geoserver/2.12.x/community-2018-09-21/geoserver-2.12-SNAPSHOT-ncwms-plugin.zip',
+  $wmts_download_url      = 'https://build.geoserver.org/geoserver/2.12.x/community-2018-09-21/geoserver-2.12-SNAPSHOT-wmts-multi-dimensional-plugin.zip',
   $csw_download_url       = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-csw-plugin.zip',
   $wcs_eo_download_url    = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-wcs2_0-eo-plugin.zip',
   $wps_download_url       = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-wps-plugin.zip'
