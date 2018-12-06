@@ -6,6 +6,9 @@ class osiris::globals (
   $base_url                              = "http://${facts['fqdn']}",
   $drupal_url                            = 'https://osiris.example.com',
 
+  # Operator email
+  $operator_email                        = "admin@osiris.example.com",
+
   # Context paths for reverse proxy
   $context_path_geoserver                = '/geoserver',
   $context_path_resto                    = '/resto',

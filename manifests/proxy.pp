@@ -4,6 +4,7 @@ class osiris::proxy (
 
   $enable_ssl             = false,
   $enable_sso             = false,
+  $enable_letsencrypt     = false,
 
   $context_path_geoserver = undef,
   $context_path_resto     = undef,
@@ -143,7 +144,7 @@ class osiris::proxy (
 
   if $enable_sso {
     unless ($tls_cert and $tls_key) {
-      fail("osiris::proxy requres \$tls_cert and \$tls_key to be set if \$enable_sso is true")
+      fail("osiris::proxy requires \$tls_cert and \$tls_key to be set if \$enable_sso is true")
     }
     contain ::osiris::proxy::shibboleth
 
@@ -239,16 +240,25 @@ class osiris::proxy (
   }
 
   if $enable_ssl {
-    unless ($tls_cert and $tls_key) {
-      fail("osiris::proxy requres \$tls_cert and \$tls_key to be set if \$enable_ssl is true")
+    unless ($enable_letsencrypt or ($tls_cert and $tls_key)) {
+      fail("osiris::proxy requres \$tls_cert and \$tls_key to be set if \$enable_ssl is true and \$enable_letsencrypt is false")
     }
 
-    file { $tls_cert_path:
-      ensure  => present,
-      mode    => '0644',
-      owner   => 'root',
-      group   => 'root',
-      content => $tls_cert,
+    if $enable_letsencrypt {
+      contain ::osiris::proxy::letsencrypt
+    }
+
+    if $tls_cert {
+      file { $tls_cert_path:
+        ensure  => present,
+        mode    => '0644',
+        owner   => 'root',
+        group   => 'root',
+        content => $tls_cert,
+      }
+      $real_tls_cert_path = $tls_cert_path
+    } elsif $enable_letsencrypt {
+      $real_tls_cert_path = "/etc/letsencrypt/live/$vhost_name/cert.pem"
     }
 
     if $tls_chain {
@@ -260,16 +270,23 @@ class osiris::proxy (
         content => $tls_chain,
       }
       $real_tls_chain_path = $tls_chain_path
+    } elsif $enable_letsencrypt {
+      $real_tls_chain_path = "/etc/letsencrypt/live/$vhost_name/chain.pem"
     } else {
       $real_tls_chain_path = undef
     }
 
-    file { $tls_key_path:
-      ensure  => present,
-      mode    => '0600',
-      owner   => 'root',
-      group   => 'root',
-      content => $tls_key,
+    if $tls_key {
+      file { $tls_key_path:
+        ensure  => present,
+        mode    => '0600',
+        owner   => 'root',
+        group   => 'root',
+        content => $tls_key,
+      }
+      $real_tls_key_path = $tls_key_path
+    } elsif $enable_letsencrypt {
+      $real_tls_key_path = "/etc/letsencrypt/live/$vhost_name/privkey.pem"
     }
 
     apache::vhost { "redirect ${vhost_name} non-ssl":
@@ -283,9 +300,9 @@ class osiris::proxy (
       servername             => $vhost_name,
       port                   => '443',
       ssl                    => true,
-      ssl_cert               => $tls_cert_path,
+      ssl_cert               => $real_tls_cert_path,
       ssl_chain              => $real_tls_chain_path,
-      ssl_key                => $tls_key_path,
+      ssl_key                => $real_tls_key_path,
       default_vhost          => true,
       shib_compat_valid_user => 'On',
       request_headers        => [
