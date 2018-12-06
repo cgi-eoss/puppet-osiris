@@ -24,9 +24,9 @@
     Hash $custom_properties
 | -%>
 # Managed by Puppet
-# FS-TEP Worker service configuration
+# Osiris Worker service configuration
 
-spring.application.name=FS-TEP Worker
+spring.application.name=Osiris Worker
 
 logging.config=<%= $logging_config_file %>
 
@@ -44,15 +44,15 @@ eureka.client.healthcheck.enabled=true
 eureka.client.serviceUrl.defaultZone=<%= $serviceregistry_url %>
 
 # Worker configuration
-fstep.worker.cache.baseDir=<%= $cache_basedir %>
-fstep.worker.cache.concurrency=<%= $cache_concurrency %>
-fstep.worker.cache.maxWeight=<%= $cache_maxweight %>
-fstep.worker.jobEnv.baseDir=<%= $jobs_basedir %>
+osiris.worker.cache.baseDir=<%= $cache_basedir %>
+osiris.worker.cache.concurrency=<%= $cache_concurrency %>
+osiris.worker.cache.maxWeight=<%= $cache_maxweight %>
+osiris.worker.jobEnv.baseDir=<%= $jobs_basedir %>
 
 # Downloader configuration
-fstep.worker.downloader.ipt.authEndpoint=<%= $ipt_auth_endpoint %>
-fstep.worker.downloader.ipt.authDomain=<%= $ipt_auth_domain %>
-fstep.worker.downloader.ipt.downloadBaseUrl=<%= $ipt_download_base_url %>
+osiris.worker.downloader.ipt.authEndpoint=<%= $ipt_auth_endpoint %>
+osiris.worker.downloader.ipt.authDomain=<%= $ipt_auth_domain %>
+osiris.worker.downloader.ipt.downloadBaseUrl=<%= $ipt_download_base_url %>
 
 # Broker configuration
 spring.activemq.broker-url=<%= $broker_url %>

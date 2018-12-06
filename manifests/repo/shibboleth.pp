@@ -1,4 +1,4 @@
-class fstep::repo::shibboleth {
+class osiris::repo::shibboleth {
 
   $repo_descr = $::operatingsystemmajrelease ? {
     '6'     => 'Shibboleth (CentOS_CentOS-6)',

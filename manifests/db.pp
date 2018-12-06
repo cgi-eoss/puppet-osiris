@@ -1,9 +1,9 @@
-class fstep::db(
+class osiris::db (
   $trust_local_network = false,
 ) {
 
-  require ::fstep::globals
+  require ::osiris::globals
 
-  contain ::fstep::db::postgresql
+  contain ::osiris::db::postgresql
 
 }

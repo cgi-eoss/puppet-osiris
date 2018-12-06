@@ -1,4 +1,4 @@
-class fstep::common::apache {
+class osiris::common::apache {
 
   class { ::apache:
     default_vhost => false,
@@ -11,7 +11,7 @@ class fstep::common::apache {
       ensure => true,
     }
 
-     ::selinux::boolean { 'httpd_can_network_connect':
+    ::selinux::boolean { 'httpd_can_network_connect':
       ensure => true,
     }
 
@@ -21,27 +21,27 @@ class fstep::common::apache {
       protocol => 'tcp'
     }
 
-    ::selinux::port { 'fs-tep-server':
+    ::selinux::port { 'osiris-server':
       seltype  => 'http_port_t',
-      port     => $fstep::globals::server_application_port,
+      port     => $osiris::globals::server_application_port,
       protocol => 'tcp'
     }
 
-    ::selinux::port { 'fs-tep-worker':
+    ::selinux::port { 'osiris-worker':
       seltype  => 'http_port_t',
-      port     => $fstep::globals::worker_application_port,
+      port     => $osiris::globals::worker_application_port,
       protocol => 'tcp'
     }
 
     ::selinux::port { 'grafana':
       seltype  => 'http_port_t',
-      port     => $fstep::globals::grafana_port,
+      port     => $osiris::globals::grafana_port,
       protocol => 'tcp'
     }
 
     ::selinux::port { 'graylog':
       seltype  => 'http_port_t',
-      port     => $fstep::globals::graylog_port,
+      port     => $osiris::globals::graylog_port,
       protocol => 'tcp'
     }
   }

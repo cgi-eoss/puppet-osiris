@@ -1,4 +1,4 @@
-class fstep::repo::webtatic {
+class osiris::repo::webtatic {
 
   $repo_descr = $::operatingsystemmajrelease ? {
     '6'     => 'Webtatic Repository EL6 - $basearch',

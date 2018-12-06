@@ -1,5 +1,5 @@
 # Install and manage GeoServer for WMS/WFS
-class fstep::geoserver (
+class osiris::geoserver (
   $group                  = 'geoserver',
   $user                   = 'geoserver',
   $user_home              = '/home/geoserver',
@@ -30,9 +30,9 @@ class fstep::geoserver (
   $wps_download_url       = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-wps-plugin.zip'
 ) {
 
-  require ::fstep::globals
+  require ::osiris::globals
 
-  contain ::fstep::common::java
+  contain ::osiris::common::java
 
   group { $group:
     ensure => present,
@@ -87,8 +87,8 @@ PORT="<%= $port %>"
 STOPPORT="<%= $stopport %>"
 END
 
-  $real_port = pick($geoserver_port, $fstep::globals::geoserver_port)
-  $real_stopport = pick($geoserver_stopport, $fstep::globals::geoserver_stopport)
+  $real_port = pick($geoserver_port, $osiris::globals::geoserver_port)
+  $real_stopport = pick($geoserver_stopport, $osiris::globals::geoserver_stopport)
 
   file { $config_file:
     ensure  => present,
@@ -105,14 +105,14 @@ END
   file { $init_script:
     ensure  => present,
     mode    => '0755',
-    content => epp('fstep/geoserver/initscript.sh.epp'), # no parameterisation yet
+    content => epp('osiris/geoserver/initscript.sh.epp'), # no parameterisation yet
     require => [User[$user], Archive[$archive], File[$config_file]],
   }
 
   file { $systemd_unit:
     ensure  => present,
     mode    => '0644',
-    content => epp('fstep/geoserver/geoserver.service.epp', {
+    content => epp('osiris/geoserver/geoserver.service.epp', {
       'init_script' => $init_script,
     }),
     require => [User[$user], Archive[$archive], File[$init_script]],
@@ -125,48 +125,48 @@ END
   # wps plugin - http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-wps-plugin.zip
   $plugins_dir = "${geoserver_path}/webapps/geoserver/WEB-INF/lib"
   archive { $ncwms_plugin:
-    path          => "${user_home}/${ncwms_plugin}.zip",
-    source        => $ncwms_download_url,
-    user          => $user,
-    extract       => true,
-    extract_path  => $plugins_dir,
-    require       => [User[$user], Package['unzip']],
+    path         => "${user_home}/${ncwms_plugin}.zip",
+    source       => $ncwms_download_url,
+    user         => $user,
+    extract      => true,
+    extract_path => $plugins_dir,
+    require      => [User[$user], Package['unzip']],
   }
 
   archive { $wmts_plugin:
-    path          => "${user_home}/${wmts_plugin}.zip",
-    source        => $wmts_download_url,
-    user          => $user,
-    extract       => true,
-    extract_path  => $plugins_dir,
-    require       => [User[$user], Package['unzip']],
+    path         => "${user_home}/${wmts_plugin}.zip",
+    source       => $wmts_download_url,
+    user         => $user,
+    extract      => true,
+    extract_path => $plugins_dir,
+    require      => [User[$user], Package['unzip']],
   }
 
   archive { $csw_plugin:
-    path          => "${user_home}/${csw_plugin}.zip",
-    source        => $csw_download_url,
-    user          => $user,
-    extract       => true,
-    extract_path  => $plugins_dir,
-    require       => [User[$user], Package['unzip']],
+    path         => "${user_home}/${csw_plugin}.zip",
+    source       => $csw_download_url,
+    user         => $user,
+    extract      => true,
+    extract_path => $plugins_dir,
+    require      => [User[$user], Package['unzip']],
   }
 
   archive { $wcs_eo_plugin:
-    path          => "${user_home}/${wcs_eo_plugin}.zip",
-    source        => $wcs_eo_download_url,
-    user          => $user,
-    extract       => true,
-    extract_path  => $plugins_dir,
-    require       => [User[$user], Package['unzip']],
+    path         => "${user_home}/${wcs_eo_plugin}.zip",
+    source       => $wcs_eo_download_url,
+    user         => $user,
+    extract      => true,
+    extract_path => $plugins_dir,
+    require      => [User[$user], Package['unzip']],
   }
-  
+
   archive { $wps_plugin:
-    path          => "${user_home}/${wps_plugin}.zip",
-    source        => $wps_download_url,
-    user          => $user,
-    extract       => true,
-    extract_path  => $plugins_dir,
-    require       => [User[$user], Package['unzip']],
+    path         => "${user_home}/${wps_plugin}.zip",
+    source       => $wps_download_url,
+    user         => $user,
+    extract      => true,
+    extract_path => $plugins_dir,
+    require      => [User[$user], Package['unzip']],
   }
 
   service { 'geoserver':

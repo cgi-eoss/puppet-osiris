@@ -1,7 +1,7 @@
-class fstep::common::php {
+class osiris::common::php {
 
   # Repo for updated PHP packages
-  require fstep::repo::webtatic
+  require osiris::repo::webtatic
 
   # PHP 5.6
   class { ::php:
@@ -12,11 +12,11 @@ class fstep::common::php {
     composer       => true,
     pear           => true,
     extensions     => {
-      xml      => { },
-      gd       => { },
-      pdo      => { },
-      mbstring => { },
-      pgsql    => { },
+      xml      => {},
+      gd       => {},
+      pdo      => {},
+      mbstring => {},
+      pgsql    => {},
     },
     settings       => {
       'PHP/max_execution_time'  => '90',

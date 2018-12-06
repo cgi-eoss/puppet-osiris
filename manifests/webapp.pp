@@ -1,51 +1,51 @@
-class fstep::webapp (
-  $app_path        = '/var/www/html/fs-tep',
-  $app_config_file = 'scripts/fstepConfig.js',
+class osiris::webapp (
+  $app_path          = '/var/www/html/osiris',
+  $app_config_file   = 'scripts/osirisConfig.js',
 
-  $fstep_url        = undef,
-  $api_url          = undef,
-  $api_v2_url       = undef,
-  $fstep_portal_url = undef,
-  $analyst_url      = undef,
-  $sso_url          = 'https://eo-sso-idp.evo-pdgs.com',
-  $mapbox_token     = 'pk.eyJ1IjoidmFuemV0dGVucCIsImEiOiJjaXZiZTM3Y2owMDdqMnVwa2E1N2VsNGJnIn0.A9BNRSTYajN0fFaVdJIpzQ',
+  $osiris_url        = undef,
+  $api_url           = undef,
+  $api_v2_url        = undef,
+  $osiris_portal_url = undef,
+  $analyst_url       = undef,
+  $sso_url           = 'https://eo-sso-idp.evo-pdgs.com',
+  $mapbox_token      = 'pk.eyJ1IjoidmFuemV0dGVucCIsImEiOiJjaXZiZTM3Y2owMDdqMnVwa2E1N2VsNGJnIn0.A9BNRSTYajN0fFaVdJIpzQ',
 ) {
 
-  require ::fstep::globals
+  require ::osiris::globals
 
-  contain ::fstep::common::apache
+  contain ::osiris::common::apache
 
-  ensure_packages(['fs-tep-portal'], {
+  ensure_packages(['osiris-portal'], {
     ensure => 'latest',
-    name   => 'fs-tep-portal',
-    tag    => 'fstep',
+    name   => 'osiris-portal',
+    tag    => 'osiris',
   })
 
-  $real_fstep_url = pick($fstep_url, $fstep::globals::base_url)
-  $real_api_url = pick($api_url, "${fstep::globals::base_url}/secure/api/v1.0")
-  $real_api_v2_url = pick($api_v2_url, "${$fstep::globals::base_url}/secure/api/v2.0")
-  $real_portal_url = pick($fstep_portal_url, $fstep::globals::drupal_url)
-  $real_analyst_url = pick($analyst_url, "${fstep::globals::base_url}/${fstep::globals::context_path_analyst}")
+  $real_osiris_url = pick($osiris_url, $osiris::globals::base_url)
+  $real_api_url = pick($api_url, "${osiris::globals::base_url}/secure/api/v1.0")
+  $real_api_v2_url = pick($api_v2_url, "${$osiris::globals::base_url}/secure/api/v2.0")
+  $real_portal_url = pick($osiris_portal_url, $osiris::globals::drupal_url)
+  $real_analyst_url = pick($analyst_url, "${osiris::globals::base_url}/${osiris::globals::context_path_analyst}")
 
   file { "${app_path}/${app_config_file}":
     ensure  => 'present',
     owner   => 'root',
     group   => 'root',
-    content => epp('fstep/webapp/fstepConfig.js.epp', {
-      'fstep_url'        => $real_fstep_url,
-      'api_url'          => $real_api_url,
-      'api_v2_url'       => $real_api_v2_url,
-      'sso_url'          => $sso_url,
-      'fstep_portal_url' => $real_portal_url,
-      'analyst_url'      => $real_analyst_url,
-      'mapbox_token'     => $mapbox_token,
+    content => epp('osiris/webapp/osirisConfig.js.epp', {
+      'osiris_url'        => $real_osiris_url,
+      'api_url'           => $real_api_url,
+      'api_v2_url'        => $real_api_v2_url,
+      'sso_url'           => $sso_url,
+      'osiris_portal_url' => $real_portal_url,
+      'analyst_url'       => $real_analyst_url,
+      'mapbox_token'      => $mapbox_token,
     }),
-    require => Package['fs-tep-portal'],
+    require => Package['osiris-portal'],
   }
 
-  ::apache::vhost { 'fstep-webapp':
+  ::apache::vhost { 'osiris-webapp':
     port       => '80',
-    servername => 'fstep-webapp',
+    servername => 'osiris-webapp',
     docroot    => $app_path,
   }
 

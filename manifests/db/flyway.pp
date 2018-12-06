@@ -1,4 +1,4 @@
-class fstep::db::flyway (
+class osiris::db::flyway (
   $version            = '4.1.2',
   $repo               = 'https://repo1.maven.org/maven2',
   $group_id           = 'org/flywaydb',
@@ -11,9 +11,9 @@ class fstep::db::flyway (
   $install_dir        = '/opt',
 ) {
 
-  require ::fstep::globals
+  require ::osiris::globals
 
-  contain ::fstep::common::java
+  contain ::osiris::common::java
 
   $flyway_commandline_url = pick(
     $source,
@@ -26,16 +26,16 @@ class fstep::db::flyway (
   # Download and unpack the standalone platform-independent binary distribution
   $archive = "flyway-commandline-${version}"
   archive { $archive:
-    path             => "/tmp/${archive}.tar.gz",
-    source           => $flyway_commandline_url,
-    checksum         => $source_digest,
-    checksum_type    => $source_digest_type,
-    extract          => true,
-    extract_path     => $install_dir,
-    creates          => $path,
-    cleanup          => true,
+    path          => "/tmp/${archive}.tar.gz",
+    source        => $flyway_commandline_url,
+    checksum      => $source_digest,
+    checksum_type => $source_digest_type,
+    extract       => true,
+    extract_path  => $install_dir,
+    creates       => $path,
+    cleanup       => true,
   }
 
-  Class['fstep::db::flyway'] -> Fstep::Db::Flyway_migration<||>
+  Class['osiris::db::flyway'] -> Osiris::Db::Flyway_migration<||>
 
 }

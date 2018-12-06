@@ -1,11 +1,11 @@
-class fstep::common::user (
+class osiris::common::user (
   $user  = undef,
   $group = undef,
-  $home  = '/home/fstep'
+  $home  = '/home/osiris'
 ) {
 
-  $uid = pick($user, $fstep::globals::user)
-  $gid = pick($group, $fstep::globals::group)
+  $uid = pick($user, $osiris::globals::user)
+  $gid = pick($group, $osiris::globals::group)
 
   group { $gid:
     ensure => present,

@@ -1,4 +1,4 @@
-class fstep::common::java {
+class osiris::common::java {
   class { ::java:
     package => 'java-1.8.0-openjdk-devel',
   }

@@ -1,20 +1,20 @@
-class fstep::kubernetes::worker(
+class osiris::kubernetes::worker (
   $kubernetes_master_hostname = $::fqdn,
 ) {
 
-  require ::fstep::globals
+  require ::osiris::globals
   require ::epel
 
-  $real_kubernetes_master_hostname = pick($kubernetes_master_hostname, $fstep::globals::kubernetes_master_hostname)
+  $real_kubernetes_master_hostname = pick($kubernetes_master_hostname, $osiris::globals::kubernetes_master_hostname)
 
   include ::kubernetes::client
 
   class { 'kubernetes::node::kubelet':
-    ensure         => 'running',
-    address        => '0.0.0.0',
-    api_servers    => "http://${real_kubernetes_master_hostname}:8080",
-    register_node  => true,
-    pod_cidr       => '10.1.0.0/16',
+    ensure        => 'running',
+    address       => '0.0.0.0',
+    api_servers   => "http://${real_kubernetes_master_hostname}:8080",
+    register_node => true,
+    pod_cidr      => '10.1.0.0/16',
   }
 
   class { 'flannel':

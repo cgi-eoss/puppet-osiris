@@ -1,14 +1,14 @@
-class fstep::kubernetes(){
+class osiris::kubernetes () {
 
-  require ::fstep::globals
+  require ::osiris::globals
   require ::epel
 
   require ::etcd
   require ::kubernetes::master
   require ::kubernetes::node
 
-  contain ::fstep::kubernetes::master
-  contain ::fstep::kubernetes::worker
+  contain ::osiris::kubernetes::master
+  contain ::osiris::kubernetes::worker
 
 }
 

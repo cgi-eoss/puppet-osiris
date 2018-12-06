@@ -1,21 +1,21 @@
 <%- |
-    String $fstep_url,
+    String $osiris_url,
     String $api_url,
     String $api_v2_url,
     String $sso_url,
     String $mapbox_token,
-    String $fstep_portal_url,
+    String $osiris_portal_url,
     String $analyst_url
 | -%>
 // Managed by Puppet
-define('fstepConfig', [], function () {
+define('osirisConfig', [], function () {
   return {
-    fstepUrl: "<%= $fstep_url %>",
+    osirisUrl: "<%= $osiris_url %>",
     apiUrl: "<%= $api_url %>",
     apiUrlv2: "<%= $api_v2_url %>",
     ssoUrl: "<%= $sso_url %>",
     mapboxToken: "<%= $mapbox_token %>",
-    fstepPortalUrl: "<%= $fstep_portal_url %>",
+    osirisPortalUrl: "<%= $osiris_portal_url %>",
     analystUrl: "<%= $analyst_url %>"
   }
 });

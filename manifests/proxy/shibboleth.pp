@@ -1,4 +1,4 @@
-class fstep::proxy::shibboleth (
+class osiris::proxy::shibboleth (
   $service_ensure                   = 'running',
   $service_enable                   = true,
 
@@ -30,7 +30,7 @@ class fstep::proxy::shibboleth (
     'location' => 'https://fsdev.eoss-cloud.it/Shibboleth.sso/SLO/Redirect'
   },
   $sp_name_id_formats               = ['urn:oasis:names:tc:SAML:2.0:nameid-format:transient'],
-  $org_name                         = 'fs-tep',
+  $org_name                         = 'osiris',
   $org_display_name                 = 'Food Security TEP',
   $attribute_map                    = [
     { 'name' => 'urn:mace:dir:attribute-def:cn', 'id' => 'Eosso-Person-commonName' },
@@ -68,8 +68,8 @@ class fstep::proxy::shibboleth (
 ) {
 
   require ::epel
-  require ::fstep::globals
-  require ::fstep::repo::shibboleth
+  require ::osiris::globals
+  require ::osiris::repo::shibboleth
 
   ensure_packages(['shibboleth'], {
     ensure  => latest,
@@ -100,7 +100,7 @@ class fstep::proxy::shibboleth (
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
-    content => epp('fstep/proxy/shibboleth/shibboleth2.xml.epp', {
+    content => epp('osiris/proxy/shibboleth/shibboleth2.xml.epp', {
       'clock_skew'                 => $clock_skew,
       'sp_id'                      => $sp_id,
       'home_url'                   => $home_url,
@@ -118,7 +118,7 @@ class fstep::proxy::shibboleth (
       'sp_key'                     => "${config_dir}/sp-key.pem",
       'sp_cert'                    => "${config_dir}/sp-cert.pem",
       'idp_keyname'                => $idp_keyname,
-      'shib_xml_custom_tags'   => $shib_xml_custom_tags	   
+      'shib_xml_custom_tags'       => $shib_xml_custom_tags
     }),
     require => Package['shibboleth'],
     notify  => Service['shibd'],
@@ -129,7 +129,7 @@ class fstep::proxy::shibboleth (
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
-    content => epp('fstep/proxy/shibboleth/attribute-policy.xml.epp', {}),
+    content => epp('osiris/proxy/shibboleth/attribute-policy.xml.epp', {}),
     require => Package['shibboleth'],
   }
 
@@ -138,7 +138,7 @@ class fstep::proxy::shibboleth (
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
-    content => epp('fstep/proxy/shibboleth/attribute-map.xml.epp', {
+    content => epp('osiris/proxy/shibboleth/attribute-map.xml.epp', {
       'attributes' => $attribute_map,
     }),
     require => Package['shibboleth'],
@@ -157,9 +157,9 @@ class fstep::proxy::shibboleth (
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
-    content => epp('fstep/proxy/shibboleth/sp-metadata.xml.epp', {
+    content => epp('osiris/proxy/shibboleth/sp-metadata.xml.epp', {
       'sp_id'                       => $sp_id,
-      'sp_cert'                     => $fstep::proxy::sp_cert,
+      'sp_cert'                     => $osiris::proxy::sp_cert,
       'assertion_consumer_services' => $sp_assertion_consumer_services,
       'slo_service'                 => $sp_slo_service,
       'name_id_formats'             => $sp_name_id_formats,
@@ -175,7 +175,7 @@ class fstep::proxy::shibboleth (
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
-    content => epp('fstep/proxy/shibboleth/idp-metadata.xml.epp', {
+    content => epp('osiris/proxy/shibboleth/idp-metadata.xml.epp', {
       'idp_id'                       => $idp_id,
       'idp_scope'                    => $idp_scope,
       'idp_cert'                     => $idp_cert,

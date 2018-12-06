@@ -1,14 +1,14 @@
 ---
-fstep::repo::location: 'file:///path/to/repo'
-fstep::portal::tls_cert: |
+osiris::repo::location: 'file:///path/to/repo'
+osiris::portal::tls_cert: |
   portal
   tls
   cert
-fstep::portal::tls_key: |
+osiris::portal::tls_key: |
   portal
   tls
   key
-fstep::portal::shibboleth::idp_cert: |
+osiris::portal::shibboleth::idp_cert: |
   idp
   tls
   cert

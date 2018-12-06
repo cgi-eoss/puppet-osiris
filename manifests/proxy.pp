@@ -1,6 +1,6 @@
-# Configure the gateway to the FS-TEP services, reverse-proxying to nodes implementing the other classes
-class fstep::proxy (
-  $vhost_name             = 'fstep-proxy',
+# Configure the gateway to the Osiris services, reverse-proxying to nodes implementing the other classes
+class osiris::proxy (
+  $vhost_name             = 'osiris-proxy',
 
   $enable_ssl             = false,
   $enable_sso             = false,
@@ -16,11 +16,10 @@ class fstep::proxy (
   $context_path_gui       = undef,
   $context_path_analyst   = undef,
   $context_path_broker    = undef,
-  
 
-  $tls_cert_path          = '/etc/pki/tls/certs/fstep_portal.crt',
-  $tls_chain_path         = '/etc/pki/tls/certs/fstep_portal.chain.crt',
-  $tls_key_path           = '/etc/pki/tls/private/fstep_portal.key',
+  $tls_cert_path          = '/etc/pki/tls/certs/osiris_portal.crt',
+  $tls_chain_path         = '/etc/pki/tls/certs/osiris_portal.chain.crt',
+  $tls_key_path           = '/etc/pki/tls/private/osiris_portal.key',
   $tls_cert               = undef,
   $tls_chain              = undef,
   $tls_key                = undef,
@@ -31,9 +30,9 @@ class fstep::proxy (
   $sp_key                 = undef,
 ) {
 
-  require ::fstep::globals
+  require ::osiris::globals
 
-  contain ::fstep::common::apache
+  contain ::osiris::common::apache
 
   ensure_packages(['apr-util-pgsql'])
   include ::apache::mod::headers
@@ -43,7 +42,7 @@ class fstep::proxy (
   $default_proxy_config = {
     docroot    => '/var/www/html',
     vhost_name => '_default_', # The default landing site should always be Drupal
-    proxy_dest => 'http://fstep-drupal', # Drupal is always mounted at the base_url
+    proxy_dest => 'http://osiris-drupal', # Drupal is always mounted at the base_url
     rewrites   => [
       {
         rewrite_rule => ['^/app$ /app/ [R]']
@@ -54,19 +53,19 @@ class fstep::proxy (
         rewrite_rule => ['.* - [F]']
       }
     ],
-    options => [ '-Indexes' ]
+    options    => [ '-Indexes' ]
   }
 
-  $real_context_path_geoserver = pick($context_path_geoserver, $fstep::globals::context_path_geoserver)
-  $real_context_path_resto = pick($context_path_resto, $fstep::globals::context_path_resto)
-  $real_context_path_webapp = pick($context_path_webapp, $fstep::globals::context_path_webapp)
-  $real_context_path_wps = pick($context_path_wps, $fstep::globals::context_path_wps)
-  $real_context_path_api_v2 = pick($context_path_api_v2, $fstep::globals::context_path_api_v2)
-  $real_context_path_monitor = pick($context_path_monitor, $fstep::globals::context_path_monitor)
-  $real_context_path_logs = pick($context_path_logs, $fstep::globals::context_path_logs)
-  $real_context_path_eureka = pick($context_path_eureka, $fstep::globals::context_path_eureka)
-  $real_context_path_analyst = pick($context_path_analyst, $fstep::globals::context_path_analyst)
-  $real_context_path_broker = pick($context_path_broker, $fstep::globals::context_path_broker)
+  $real_context_path_geoserver = pick($context_path_geoserver, $osiris::globals::context_path_geoserver)
+  $real_context_path_resto = pick($context_path_resto, $osiris::globals::context_path_resto)
+  $real_context_path_webapp = pick($context_path_webapp, $osiris::globals::context_path_webapp)
+  $real_context_path_wps = pick($context_path_wps, $osiris::globals::context_path_wps)
+  $real_context_path_api_v2 = pick($context_path_api_v2, $osiris::globals::context_path_api_v2)
+  $real_context_path_monitor = pick($context_path_monitor, $osiris::globals::context_path_monitor)
+  $real_context_path_logs = pick($context_path_logs, $osiris::globals::context_path_logs)
+  $real_context_path_eureka = pick($context_path_eureka, $osiris::globals::context_path_eureka)
+  $real_context_path_analyst = pick($context_path_analyst, $osiris::globals::context_path_analyst)
+  $real_context_path_broker = pick($context_path_broker, $osiris::globals::context_path_broker)
 
   # Directory/Location directives - cannot be an empty array...
   $default_directories = [
@@ -74,7 +73,7 @@ class fstep::proxy (
       'provider'        => 'location',
       'path'            => $real_context_path_logs,
       'custom_fragment' =>
-      "RequestHeader set X-Graylog-Server-URL \"${fstep::globals::base_url}${fstep::globals::graylog_api_path}\""
+      "RequestHeader set X-Graylog-Server-URL \"${osiris::globals::base_url}${osiris::globals::graylog_api_path}\""
     }
   ]
 
@@ -83,54 +82,53 @@ class fstep::proxy (
     {
       'path'   => $real_context_path_geoserver,
       'url'    =>
-      "http://${fstep::globals::geoserver_hostname}:${fstep::globals::geoserver_port}${real_context_path_geoserver}",
+      "http://${osiris::globals::geoserver_hostname}:${osiris::globals::geoserver_port}${real_context_path_geoserver}",
       'params' => { 'retry' => '0' }
     },
     {
       'path'   => $real_context_path_resto,
-      'url'    => "http://${fstep::globals::resto_hostname}",
+      'url'    => "http://${osiris::globals::resto_hostname}",
       'params' => { 'retry' => '0' }
     },
     {
       'path'   => $real_context_path_webapp,
-      'url'    => "http://${fstep::globals::webapp_hostname}",
+      'url'    => "http://${osiris::globals::webapp_hostname}",
       'params' => { 'retry' => '0' }
     },
     {
       'path'   => $real_context_path_wps,
-      'url'    => "http://${fstep::globals::wps_hostname}",
+      'url'    => "http://${osiris::globals::wps_hostname}",
       'params' => { 'retry' => '0' }
     },
     {
       'path'   => $real_context_path_api_v2,
       'url'    =>
-      "http://${fstep::globals::server_hostname}:${fstep::globals::server_application_port}${real_context_path_api_v2}",
+      "http://${osiris::globals::server_hostname}:${osiris::globals::server_application_port}${real_context_path_api_v2}",
       'params' => { 'retry' => '0' }
     },
     {
       'path'   => $real_context_path_monitor,
-      'url'    => "http://${fstep::globals::monitor_hostname}:${fstep::globals::grafana_port}",
+      'url'    => "http://${osiris::globals::monitor_hostname}:${osiris::globals::grafana_port}",
       'params' => { 'retry' => '0' }
     },
     {
       'path'   => $real_context_path_logs,
-      'url'    => "http://${fstep::globals::monitor_hostname}:${fstep::globals::graylog_port}${
-        fstep::globals::graylog_context_path}",
+      'url'    => "http://${osiris::globals::monitor_hostname}:${osiris::globals::graylog_port}${osiris::globals::graylog_context_path}",
       'params' => { 'retry' => '0' }
     },
     {
       'path'   => $real_context_path_eureka,
-      'url'    => "http://${fstep::globals::server_hostname}:${fstep::globals::serviceregistry_application_port}/eureka",
+      'url'    => "http://${osiris::globals::server_hostname}:${osiris::globals::serviceregistry_application_port}/eureka",
       'params' => { 'retry' => '0' }
     },
     {
       'path'   => $real_context_path_analyst,
-      'url'    => "http://${fstep::globals::ui_hostname}/analyst",
+      'url'    => "http://${osiris::globals::ui_hostname}/analyst",
       'params' => { 'retry' => '0' }
     },
     {
       'path'   => $real_context_path_broker,
-      'url'    => "http://${fstep::globals::broker_hostname}",
+      'url'    => "http://${osiris::globals::broker_hostname}",
       'params' => { 'retry' => '0' }
     }
   ]
@@ -138,16 +136,16 @@ class fstep::proxy (
   $default_proxy_pass_match = [
     {
       'path'   => '^/gui/(.*)$',
-      'url'    => "http://${fstep::globals::default_gui_hostname}\$1",
+      'url'    => "http://${osiris::globals::default_gui_hostname}\$1",
       'params' => { 'retry' => '0' }
     }
   ]
 
   if $enable_sso {
     unless ($tls_cert and $tls_key) {
-      fail("fstep::proxy requres \$tls_cert and \$tls_key to be set if \$enable_sso is true")
+      fail("osiris::proxy requres \$tls_cert and \$tls_key to be set if \$enable_sso is true")
     }
-    contain ::fstep::proxy::shibboleth
+    contain ::osiris::proxy::shibboleth
 
     # add the SSO certificate (which may be different than the portal one)
     file { $sp_cert_path:
@@ -174,8 +172,8 @@ class fstep::proxy (
         'sethandler' => 'shib'
       },
       {
-        'provider'   => 'location',
-        'path'       => '/config'
+        'provider' => 'location',
+        'path'     => '/config'
       },
       {
         'provider'              => 'location',
@@ -202,14 +200,14 @@ class fstep::proxy (
         'auth_require'          => 'valid-user',
       },
       {
-        'provider'              => 'location',
-        'path'                  => '/secure',
-        'custom_fragment'       =>
+        'provider'        => 'location',
+        'path'            => '/secure',
+        'custom_fragment' =>
         "<If \"-n req('Authorization')\">
     AuthType Basic
-    AuthName 'FS-TEP API access'
+    AuthName 'Osiris API access'
     AuthBasicProvider dbd
-    AuthDBDUserPWQuery \"${fstep::globals::proxy_dbd_query}\"
+    AuthDBDUserPWQuery \"${osiris::globals::proxy_dbd_query}\"
     Require valid-user
     RewriteEngine On
     RewriteCond %{REMOTE_USER} ^(.*)$
@@ -242,7 +240,7 @@ class fstep::proxy (
 
   if $enable_ssl {
     unless ($tls_cert and $tls_key) {
-      fail("fstep::proxy requres \$tls_cert and \$tls_key to be set if \$enable_ssl is true")
+      fail("osiris::proxy requres \$tls_cert and \$tls_key to be set if \$enable_ssl is true")
     }
 
     file { $tls_cert_path:
@@ -282,21 +280,21 @@ class fstep::proxy (
       redirect_dest   => "https://${vhost_name}/"
     }
     apache::vhost { $vhost_name:
-      servername       => $vhost_name,
-      port             => '443',
-      ssl              => true,
-      ssl_cert         => $tls_cert_path,
-      ssl_chain        => $real_tls_chain_path,
-      ssl_key          => $tls_key_path,
-      default_vhost    => true,
+      servername             => $vhost_name,
+      port                   => '443',
+      ssl                    => true,
+      ssl_cert               => $tls_cert_path,
+      ssl_chain              => $real_tls_chain_path,
+      ssl_key                => $tls_key_path,
+      default_vhost          => true,
       shib_compat_valid_user => 'On',
-      request_headers  => [
+      request_headers        => [
         'set X-Forwarded-Proto "https"'
       ],
-      directories      => $directories,
-      proxy_pass       => $proxy_pass,
-      proxy_pass_match => $proxy_pass_match,
-      *                => $default_proxy_config,
+      directories            => $directories,
+      proxy_pass             => $proxy_pass,
+      proxy_pass_match       => $proxy_pass_match,
+      *                      => $default_proxy_config,
     }
   } else {
     apache::vhost { $vhost_name:
@@ -311,8 +309,8 @@ class fstep::proxy (
 
 
   class { 'apache::mod::authn_dbd':
-    authn_dbd_params => "host=${fstep::globals::proxy_dbd_db} port=${fstep::globals::proxy_dbd_port} user=${fstep::globals::fstep_db_v2_api_keys_reader_username} password=${fstep::globals::fstep_db_v2_api_keys_reader_password} dbname=${fstep::globals::fstep_db_v2_name}",
-    authn_dbd_dbdriver => "${fstep::globals::proxy_dbd_dbdriver}"
+    authn_dbd_params   => "host=${osiris::globals::proxy_dbd_db} port=${osiris::globals::proxy_dbd_port} user=${osiris::globals::osiris_db_v2_api_keys_reader_username} password=${osiris::globals::osiris_db_v2_api_keys_reader_password} dbname=${osiris::globals::osiris_db_v2_name}",
+    authn_dbd_dbdriver => "${osiris::globals::proxy_dbd_dbdriver}"
   }
 
 

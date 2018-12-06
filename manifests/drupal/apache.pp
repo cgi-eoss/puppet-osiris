@@ -1,10 +1,10 @@
-class fstep::drupal::apache (
+class osiris::drupal::apache (
   $site_path
 ) {
 
-  require ::fstep::globals
+  require ::osiris::globals
 
-  contain ::fstep::common::apache
+  contain ::osiris::common::apache
 
   include ::apache::mod::proxy_http
   include ::apache::mod::rewrite
@@ -16,9 +16,9 @@ class fstep::drupal::apache (
     default: { include ::apache::mod::proxy_fcgi }
   }
 
-  ::apache::vhost { 'fstep-drupal':
+  ::apache::vhost { 'osiris-drupal':
     port             => '80',
-    servername       => 'fstep-drupal',
+    servername       => 'osiris-drupal',
     docroot          => "${site_path}",
     override         => ['All'],
     directoryindex   => '/index.php index.php',

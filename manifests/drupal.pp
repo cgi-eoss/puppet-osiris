@@ -1,32 +1,32 @@
-class fstep::drupal (
-  $drupal_site      = 'foodsecurity-tep.eo.esa.int',
-  $drupal_version   = '7.59',
-  $www_path         = '/var/www/html/drupal',
-  $www_user         = 'apache',
+class osiris::drupal (
+  $drupal_site    = 'osiris.example.com',
+  $drupal_version = '7.59',
+  $www_path       = '/var/www/html/drupal',
+  $www_user       = 'apache',
 
-  $db_host          = undef,
-  $db_name          = undef,
-  $db_user          = undef,
-  $db_pass          = undef,
-  $db_port          = '5432',
-  $db_driver        = 'pgsql',
-  $db_prefix        = 'drupal_',
+  $db_host        = undef,
+  $db_name        = undef,
+  $db_user        = undef,
+  $db_pass        = undef,
+  $db_port        = '5432',
+  $db_driver      = 'pgsql',
+  $db_prefix      = 'drupal_',
 
-  $init_db          = true,
-  $enable_cron      = true,
+  $init_db        = true,
+  $enable_cron    = true,
 ) {
 
-  require ::fstep::globals
+  require ::osiris::globals
   require ::epel
 
-  contain ::fstep::common::php
+  contain ::osiris::common::php
 
   class { '::postgresql::client': }
 
-  $real_db_host = pick($db_host, $::fstep::globals::db_hostname)
-  $real_db_name = pick($db_name, $::fstep::globals::fstep_db_name)
-  $real_db_user = pick($db_user, $::fstep::globals::fstep_db_username)
-  $real_db_pass = pick($db_pass, $::fstep::globals::fstep_db_password)
+  $real_db_host = pick($db_host, $::osiris::globals::db_hostname)
+  $real_db_name = pick($db_name, $::osiris::globals::osiris_db_name)
+  $real_db_user = pick($db_user, $::osiris::globals::osiris_db_username)
+  $real_db_pass = pick($db_pass, $::osiris::globals::osiris_db_password)
 
   file { $www_path:
     ensure => directory,
@@ -51,8 +51,8 @@ class fstep::drupal (
       'twitter_block'     => '2.3',
       'views'             => '3.16',
     },
-    settings_content => epp('fstep/drupal/settings.php.epp', {
-      'db'         => {
+    settings_content => epp('osiris/drupal/settings.php.epp', {
+      'db'           => {
         'host'     => $real_db_host,
         'database' => $real_db_name,
         'username' => $real_db_user,
@@ -61,7 +61,7 @@ class fstep::drupal (
         'driver'   => $db_driver,
         'prefix'   => $db_prefix,
       },
-      'fstep_proxy' => $::fstep::globals::proxy_hostname,
+      'osiris_proxy' => $::osiris::globals::proxy_hostname,
     }),
     cron_file_ensure => $enable_cron ? {
       true    => 'present',
@@ -72,7 +72,7 @@ class fstep::drupal (
 
   $site_path = "${www_path}/${drupal_site}"
 
-  class { ::fstep::drupal::apache:
+  class { ::osiris::drupal::apache:
     site_path => $site_path
   }
 
@@ -81,8 +81,8 @@ class fstep::drupal (
     $drush_site_install = "${::drupal::drush_path} -y site-install"
     $drush_si_options = "standard install_configure_form.update_status_module='array(FALSE,FALSE)'"
 
-    $drupal_site_install_requires = defined(Class["::fstep::db"]) ? {
-      true    => [Class['::fstep::db'], Drupal::Site[$drupal_site]],
+    $drupal_site_install_requires = defined(Class["::osiris::db"]) ? {
+      true    => [Class['::osiris::db'], Drupal::Site[$drupal_site]],
       default => [Drupal::Site[$drupal_site]]
     }
 

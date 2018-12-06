@@ -1,4 +1,4 @@
-class fstep::dockerregistry (
+class osiris::dockerregistry (
   $group                  = 'hrb-admin',
   $user                   = 'hrb-admin',
   $user_home              = '/home/hrb-admin',
@@ -12,14 +12,15 @@ class fstep::dockerregistry (
   $harbor_archive         = 'harbor-offline-installer-v1.3.0.tgz',
   # # the following var should be with one or both: --with-clair , --with-notary
   $install_opts           = '--with-clair',
-  $hostname               = "fstep-dockerregistry.local",
+  $hostname               = "osiris-dockerregistry.local",
   $ui_url_protocol        = "http",
   $db_password            = "registrypass",
   $ssl_cert_path          = "/data/cert/",
   $ssl_cert_key           = "/data/key",
   $clair_db_password      = "clairpass",
-  $harbor_admin_password  = "harborpass") {
-  require ::fstep::globals
+  $harbor_admin_password  = "harborpass"
+) {
+  require ::osiris::globals
 
   group { $group: ensure => present, }
 
@@ -39,7 +40,7 @@ class fstep::dockerregistry (
   package { 'docker': ensure => absent, }
 
   package { 'docker-common': ensure => absent, }
-  
+
   package { 'docker-engine': ensure => absent, }
 
   exec { 'docker-ce-repo-add': command => "/bin/yum-config-manager --add-repo $docker_ce_repo_url" }
@@ -55,23 +56,23 @@ class fstep::dockerregistry (
     require => Package['docker-ce'],
   }
 
-  exec{'retrieve_docker_compose':
-  command => "/usr/bin/wget -q https://github.com/docker/compose/releases/download/$docker_compose_version/docker-compose-Linux-$architecture -O /usr/local/sbin/docker-compose-Linux-$architecture",
-  creates => "/usr/local/bin/docker-compose-Linux-$architecture",
+  exec { 'retrieve_docker_compose':
+    command => "/usr/bin/wget -q https://github.com/docker/compose/releases/download/$docker_compose_version /docker-compose-Linux-$architecture -O /usr/local/sbin/docker-compose-Linux-$architecture",
+    creates => "/usr/local/bin/docker-compose-Linux-$architecture",
   }
 
   file { "/usr/local/sbin/docker-compose-Linux-$architecture":
     mode    => '0755',
     require => Exec['retrieve_docker_compose'],
   }
-  
-  exec{'retrieve_harbor':
-  command => "/usr/bin/wget -q https://storage.googleapis.com/harbor-releases/$harbor_archive -O ${user_home}/$harbor_archive",
-  creates => "${user_home}/$harbor_archive",
+
+  exec { 'retrieve_harbor':
+    command => "/usr/bin/wget -q https://storage.googleapis.com/harbor-releases/$harbor_archive -O ${user_home}/$harbor_archive",
+    creates => "${user_home}/$harbor_archive",
   }
-  
+
   file { "${user_home}/$harbor_archive":
-   owner => $user
+    owner => $user
   }
 
   file { $harbor_home:
@@ -80,15 +81,15 @@ class fstep::dockerregistry (
     owner   => $user,
     require => User[$user],
   }
-  
+
   exec { 'unzip_harbor':
     command => "/bin/tar xzf ${user_home}/$harbor_archive --strip 1 -C $harbor_home",
-    require      => [User[$user], File["${user_home}/$harbor_archive"], File["$harbor_home"]],
+    require => [User[$user], File["${user_home}/$harbor_archive"], File["$harbor_home"]],
   }
 
   file { $config_file:
     ensure  => present,
-    content => epp('fstep/harbor/harbor.cfg.epp', {
+    content => epp('osiris/harbor/harbor.cfg.epp', {
       'hostname'              => $hostname,
       'ui_url_protocol'       => $ui_url_protocol,
       'db_password'           => $db_password,
@@ -100,7 +101,7 @@ class fstep::dockerregistry (
     ),
     require => Exec['unzip_harbor'],
   }
-  
+
   exec { 'harbor-install':
     command => "$harbor_home/install.sh $install_opts",
     require => File["$config_file"],

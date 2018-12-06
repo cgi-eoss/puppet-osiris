@@ -1,9 +1,9 @@
-# FS-TEP package repository
-class fstep::repo::fstep {
-  ensure_resource(yumrepo, 'fstep', {
+# Osiris package repository
+class osiris::repo::osiris {
+  ensure_resource(yumrepo, 'osiris', {
     ensure          => 'present',
-    descr           => 'FS-TEP',
-    baseurl         => $fstep::repo::location,
+    descr           => 'Osiris',
+    baseurl         => $osiris::repo::location,
     enabled         => 1,
     gpgcheck        => 0,
     metadata_expire => '15m',

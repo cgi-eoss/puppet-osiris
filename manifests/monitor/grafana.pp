@@ -1,4 +1,4 @@
-class fstep::monitor::grafana (
+class osiris::monitor::grafana (
   $db_name         = 'grafana',
   $db_username     = 'grafanauser',
   $db_password     = 'grafanapass',
@@ -7,10 +7,10 @@ class fstep::monitor::grafana (
   $grafana_version = '4.6.2',
 ) {
 
-  require ::fstep::globals
+  require ::osiris::globals
   require ::epel
 
-  $real_port = pick($port, $fstep::globals::grafana_port)
+  $real_port = pick($port, $osiris::globals::grafana_port)
 
   class { ::grafana:
     version => $grafana_version,

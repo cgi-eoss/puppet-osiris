@@ -1,16 +1,16 @@
-class fstep::kubernetes::master(
+class osiris::kubernetes::master (
   $kubernetes_master_hostname = $::fqdn,
 ) {
 
-  require ::fstep::globals
+  require ::osiris::globals
   require ::epel
 
-  $real_kubernetes_master_hostname = pick($kubernetes_master_hostname, $fstep::globals::kubernetes_master_hostname)
+  $real_kubernetes_master_hostname = pick($kubernetes_master_hostname, $osiris::globals::kubernetes_master_hostname)
 
   include ::kubernetes::client
 
   class { 'etcd':
-    ensure                     => 'latest',
+    ensure                => 'latest',
     listen_client_urls    => 'http://0.0.0.0:2379',
     advertise_client_urls => 'http://0.0.0.0:2379',
   }

@@ -1,11 +1,11 @@
-class fstep::common::docker (
+class osiris::common::docker (
 ) {
 
-  require ::fstep::common::user
-  require ::fstep::globals
+  require ::osiris::common::user
+  require ::osiris::globals
 
   class { '::docker':
-    docker_users => [$fstep::globals::user],
+    docker_users => [$osiris::globals::user],
   }
 
 }

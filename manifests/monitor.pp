@@ -1,12 +1,12 @@
-class fstep::monitor(){
+class osiris::monitor () {
 
-  require ::fstep::globals
+  require ::osiris::globals
   require ::epel
 
-  contain ::fstep::monitor::grafana
-  contain ::fstep::monitor::influxdb
-  contain ::fstep::monitor::telegraf
-  contain ::fstep::monitor::graylog_server
+  contain ::osiris::monitor::grafana
+  contain ::osiris::monitor::influxdb
+  contain ::osiris::monitor::telegraf
+  contain ::osiris::monitor::graylog_server
 
 }
 

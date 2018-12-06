@@ -1,9 +1,9 @@
-class fstep::broker (
-  $activemq_version      = '5.14.5'
-){
+class osiris::broker (
+  $activemq_version = '5.14.5'
+) {
 
-  require ::fstep::globals
-  require ::fstep::common::java
+  require ::osiris::globals
+  require ::osiris::common::java
   require ::epel
 
   $activemq_prereq = [ 'wget', 'unzip' ]
@@ -13,9 +13,9 @@ class fstep::broker (
     install              => 'source',
     version              => "${activemq_version}",
     install_dependencies => false,
-    install_destination  => '/opt',      # Default value
-    create_user          => true,        # Default value
-    process_user         => 'activemq',  # Default value
+    install_destination  => '/opt', # Default value
+    create_user          => true, # Default value
+    process_user         => 'activemq', # Default value
     disable              => true
   }
 
@@ -24,11 +24,11 @@ class fstep::broker (
   } ->
 
   service { 'activemq_service':
-    start       => "/opt/apache-activemq-${activemq_version}/bin/activemq start",
-    stop        => "/opt/apache-activemq-${activemq_version}/bin/activemq stop",
-    status      => "/opt/apache-activemq-${activemq_version}/bin/activemq status",
-    enable      => true,
-    ensure      => 'running'
+    start  => "/opt/apache-activemq-${activemq_version}/bin/activemq start",
+    stop   => "/opt/apache-activemq-${activemq_version}/bin/activemq stop",
+    status => "/opt/apache-activemq-${activemq_version}/bin/activemq status",
+    enable => true,
+    ensure => 'running'
   }
 }
 
