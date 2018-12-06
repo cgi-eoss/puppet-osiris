@@ -260,8 +260,7 @@ class osiris::proxy (
         auth_name      => 'Basic Auth',
         auth_user_file => $user_file_path,
         auth_require   => 'valid-user',
-      }, $default_directories
-    ])
+      }], $default_directories)
     $proxy_pass = $default_proxy_pass
     $proxy_pass_match = $default_proxy_pass_match
   } else {
