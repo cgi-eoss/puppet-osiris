@@ -247,8 +247,8 @@ class osiris::proxy (
     file { $user_file_path:
       ensure  => present,
       mode    => '0600',
-      owner   => 'root',
-      group   => 'root',
+      owner   => 'apache',
+      group   => 'apache',
       content => "$basic_auth_user:$basic_auth_hashed_pwd"
     }
 
