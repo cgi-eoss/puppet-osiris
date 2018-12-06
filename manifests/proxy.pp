@@ -238,13 +238,7 @@ class osiris::proxy (
       'params'       => { 'retry' => '0' }
     }], $default_proxy_pass)
     $proxy_pass_match = $default_proxy_pass_match
-  } else {
-    $directories = $default_directories
-    $proxy_pass = $default_proxy_pass
-    $proxy_pass_match = $default_proxy_pass_match
-  }
-
-  if $enable_basic_auth {
+  } elsif $enable_basic_auth {
     unless ($basic_auth_user and $basic_auth_pwd) {
       fail("osiris::proxy requires \$basic_auth_user and \$basic_auth_pwd to be set when \$enable_basic_auth is true")
     }
@@ -258,17 +252,24 @@ class osiris::proxy (
       content => "$basic_auth_user:$basic_auth_hashed_pwd"
     }
 
-    $auth_config = {
-      auth_type       => 'Basic',
-      auth_name       => 'Basic Auth',
-      auth_user_file  => $user_file_path,
-      auth_require    => 'valid-user',
-    }
+    $directories = concat([
+      {
+        provider       => 'location',
+        path           => '/',
+        auth_type      => 'Basic',
+        auth_name      => 'Basic Auth',
+        auth_user_file => $user_file_path,
+        auth_require   => 'valid-user',
+      }, $default_directories
+    ])
+    $proxy_pass = $default_proxy_pass
+    $proxy_pass_match = $default_proxy_pass_match
   } else {
-    $auth_config = {}
+    $directories = $default_directories
+    $proxy_pass = $default_proxy_pass
+    $proxy_pass_match = $default_proxy_pass_match
   }
 
-  $default_vhost_params = merge($default_proxy_config, $auth_config)
 
   if $enable_ssl {
     unless ($enable_letsencrypt or ($tls_cert and $tls_key)) {
@@ -344,7 +345,7 @@ class osiris::proxy (
       directories            => $directories,
       proxy_pass             => $proxy_pass,
       proxy_pass_match       => $proxy_pass_match,
-      *                      => $default_vhost_params,
+      *                      => $default_proxy_config,
     }
   } else {
     apache::vhost { $vhost_name:
@@ -353,7 +354,7 @@ class osiris::proxy (
       directories      => $directories,
       proxy_pass       => $proxy_pass,
       proxy_pass_match => $proxy_pass_match,
-      *                => $default_vhost_params
+      *                => $default_proxy_config
     }
   }
 
