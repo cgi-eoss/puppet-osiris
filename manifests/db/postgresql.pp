@@ -93,27 +93,30 @@ class osiris::db::postgresql (
     grant    => 'ALL',
   }
 
-  ::postgresql::server::role { 'osirisdb_apikeys':
-    username      => $db_v2_api_keys_reader_username,
-    password_hash => postgresql_password($db_v2_api_keys_reader_username, $db_v2_api_keys_reader_password),
-    require       => Postgresql::Server::Db['osirisdb_v2']
-  }
-
-  ::postgresql::server::table_grant { 'API Key read permission':
-    db        => $db_v2_name,
-    table     => $db_v2_api_keys_table,
-    privilege => 'SELECT',
-    role      => "${db_v2_api_keys_reader_username}",
-    require   => Postgresql::Server::Role['osirisdb_apikeys']
-  }
-
-  ::postgresql::server::table_grant { 'Users read permission':
-    db        => $db_v2_name,
-    table     => $db_v2_api_users_table,
-    privilege => 'SELECT',
-    role      => "${db_v2_api_keys_reader_username}",
-    require   => Postgresql::Server::Role['osirisdb_apikeys']
-  }
+  # Associated with puppetised key access (see proxy.pp)
+  # TODO: Remove functionality or solve authn_dbd install problem
+  #
+  # ::postgresql::server::role { 'osirisdb_apikeys':
+  #   username      => $db_v2_api_keys_reader_username,
+  #   password_hash => postgresql_password($db_v2_api_keys_reader_username, $db_v2_api_keys_reader_password),
+  #   require       => Postgresql::Server::Db['osirisdb_v2']
+  # }
+  #
+  # ::postgresql::server::table_grant { 'API Key read permission':
+  #   db        => $db_v2_name,
+  #   table     => $db_v2_api_keys_table,
+  #   privilege => 'SELECT',
+  #   role      => "${db_v2_api_keys_reader_username}",
+  #   require   => Postgresql::Server::Role['osirisdb_apikeys']
+  # }
+  #
+  # ::postgresql::server::table_grant { 'Users read permission':
+  #   db        => $db_v2_name,
+  #   table     => $db_v2_api_users_table,
+  #   privilege => 'SELECT',
+  #   role      => "${db_v2_api_keys_reader_username}",
+  #   require   => Postgresql::Server::Role['osirisdb_apikeys']
+  # }
 
   ::postgresql::server::grant { 'API DB Connect':
     privilege => 'CONNECT',
