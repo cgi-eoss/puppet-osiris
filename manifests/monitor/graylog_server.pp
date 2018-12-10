@@ -38,10 +38,10 @@ class osiris::monitor::graylog_server (
   }
 
   class { ::graylog::repository:
-    version => '2.3'
+    version => '2.4'
   } ->
   class { ::graylog::server:
-    package_version => '2.3.0-7',
+    package_version => '2.4.6',
     config          => {
       password_secret          => $real_db_secret, # Fill in your password secret
       root_password_sha2       => $real_db_sha256, # Fill in your root password hash
