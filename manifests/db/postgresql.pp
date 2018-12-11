@@ -117,11 +117,11 @@ class osiris::db::postgresql (
   #   role      => "${db_v2_api_keys_reader_username}",
   #   require   => Postgresql::Server::Role['osirisdb_apikeys']
   # }
-
-  ::postgresql::server::grant { 'API DB Connect':
-    privilege => 'CONNECT',
-    db        => $db_v2_name,
-    role      => $db_v2_api_keys_reader_username,
-  }
+  #
+  # ::postgresql::server::grant { 'API DB Connect':
+  #   privilege => 'CONNECT',
+  #   db        => $db_v2_name,
+  #   role      => $db_v2_api_keys_reader_username,
+  # }
 
 }
