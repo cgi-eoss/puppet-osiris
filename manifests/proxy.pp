@@ -255,7 +255,23 @@ class osiris::proxy (
     $directories = concat([
       {
         provider       => 'location',
-        path           => '/',
+        path           => '/secure',
+        auth_type      => 'Basic',
+        auth_name      => 'Basic Auth',
+        auth_user_file => $user_file_path,
+        auth_require   => 'valid-user',
+      },
+      {
+        provider       => 'location',
+        path           => '/resto',
+        auth_type      => 'Basic',
+        auth_name      => 'Basic Auth',
+        auth_user_file => $user_file_path,
+        auth_require   => 'valid-user',
+      },
+      {
+        provider       => 'location',
+        path           => '/app',
         auth_type      => 'Basic',
         auth_name      => 'Basic Auth',
         auth_user_file => $user_file_path,
