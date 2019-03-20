@@ -10,6 +10,10 @@ class osiris::db::postgresql (
   $db_resto_su_username           = $osiris::globals::osiris_db_resto_su_username,
   $db_resto_su_password           = $osiris::globals::osiris_db_resto_su_password,
 
+  $db_geoserver_name              = $osiris::globals::osiris_db_geoserver_name,
+  $db_geoserver_username          = $osiris::globals::osiris_db_geoserver_username,
+  $db_geoserver_password          = $osiris::globals::osiris_db_geoserver_password,
+  
   $db_zoo_name                    = $osiris::globals::osiris_db_zoo_name,
   $db_zoo_username                = $osiris::globals::osiris_db_zoo_username,
   $db_zoo_password                = $osiris::globals::osiris_db_zoo_password,
@@ -42,6 +46,7 @@ class osiris::db::postgresql (
       # Access to resto db only required for osiris-resto
       "host ${db_resto_name} ${db_resto_username} ${osiris::globals::resto_hostname} md5",
       "host ${db_resto_name} ${db_resto_su_username} ${osiris::globals::resto_hostname} md5",
+      "host ${db_geoserver_name} ${db_geoserver_username} ${osiris::globals::geoserver_hostname} md5",
       # Access to zoo db only required for osiris-wps
       "host ${db_zoo_name} ${db_zoo_username} ${osiris::globals::wps_hostname} md5",
       "host ${db_v2_name} ${db_v2_api_keys_reader_username} ${osiris::globals::drupal_hostname} md5"
@@ -85,6 +90,18 @@ class osiris::db::postgresql (
     createdb      => false,
     superuser     => true,
     require       => Postgresql::Server::Db['osirisdb_resto'],
+  }
+  ::postgresql::server::db { 'osirisdb_geoserver':
+    dbname   => $db_geoserver_name,
+    user     => $db_geoserver_username,
+    password => postgresql_password($db_geoserver_username, $db_geoserver_password),
+    grant    => 'ALL',
+  }
+  ::postgresql::server::extension { 'osirisdb_geoserver_postgis':
+    database => $db_geoserver_name,
+    schema => 'public',
+    ensure => 'present',
+    extension => 'postgis'
   }
   ::postgresql::server::db { 'osirisdb_zoo':
     dbname   => $db_zoo_name,
