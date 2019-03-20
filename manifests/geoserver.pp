@@ -22,12 +22,15 @@ class osiris::geoserver (
   $csw_plugin             = 'geoserver-2.12.1-csw-plugin',
   $wcs_eo_plugin          = 'geoserver-2.12.1-wcs2_0-eo-plugin',
   $wps_plugin             = 'geoserver-2.12.1-wps-plugin',
-
+  $importer_plugin        = 'geoserver-2.12.1-importer-plugin',
+  
   $ncwms_download_url     = 'https://build.geoserver.org/geoserver/2.12.x/community-2018-09-21/geoserver-2.12-SNAPSHOT-ncwms-plugin.zip',
   $wmts_download_url      = 'https://build.geoserver.org/geoserver/2.12.x/community-2018-09-21/geoserver-2.12-SNAPSHOT-wmts-multi-dimensional-plugin.zip',
   $csw_download_url       = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-csw-plugin.zip',
   $wcs_eo_download_url    = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-wcs2_0-eo-plugin.zip',
   $wps_download_url       = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-wps-plugin.zip'
+  $importer_download_url  = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-importer-plugin.zip',
+  
 ) {
 
   require ::osiris::globals
@@ -169,6 +172,14 @@ END
     require      => [User[$user], Package['unzip']],
   }
 
+  archive { $importer_plugin:
+    path          => "${user_home}/${importer_plugin}.zip",
+    source        => $importer_download_url,
+    user          => $user,
+    extract       => true,
+    extract_path  => $plugins_dir,
+    require       => [User[$user], Package['unzip']],
+  }
   service { 'geoserver':
     ensure     => running,
     enable     => true,
