@@ -34,6 +34,7 @@ class osiris::db::postgresql (
       "host ${db_v2_name} ${db_username} samenet md5",
       "host ${db_resto_name} ${db_resto_username} samenet md5",
       "host ${db_resto_name} ${db_resto_su_username} samenet md5",
+      "host ${db_geoserver_name} ${db_geoserver_username} samenet md5",
       "host ${db_zoo_name} ${db_zoo_username} samenet md5",
     ]
   } else {
