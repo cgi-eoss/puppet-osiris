@@ -28,8 +28,8 @@ class osiris::geoserver (
   $wmts_download_url      = 'https://build.geoserver.org/geoserver/2.12.x/community-2018-09-21/geoserver-2.12-SNAPSHOT-wmts-multi-dimensional-plugin.zip',
   $csw_download_url       = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-csw-plugin.zip',
   $wcs_eo_download_url    = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-wcs2_0-eo-plugin.zip',
-  $wps_download_url       = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-wps-plugin.zip'
-  $importer_download_url  = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-importer-plugin.zip',
+  $wps_download_url       = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-wps-plugin.zip',
+  $importer_download_url  = 'http://sourceforge.net/projects/geoserver/files/GeoServer/2.12.1/extensions/geoserver-2.12.1-importer-plugin.zip'
   
 ) {
 
