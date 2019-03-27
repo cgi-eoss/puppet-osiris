@@ -99,7 +99,6 @@ class osiris::db::postgresql (
   }
   ::postgresql::server::extension { 'osirisdb_geoserver_postgis':
     database => $db_geoserver_name,
-    schema => 'public',
     ensure => 'present',
     extension => 'postgis'
   }
